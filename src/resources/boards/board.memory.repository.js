@@ -1,14 +1,15 @@
-const boardsDB = require('./boardDB');
+const DB = require('../../common/db');
+const TABLE_NAME = 'Boards';
 
-const create = async boardData => boardsDB.createBoard(boardData);
+const create = async userData => DB.addEntity(TABLE_NAME, userData);
 
-const getAll = async () => boardsDB.getAllBoards();
+const getAll = async () => DB.getAllEntities(TABLE_NAME);
 
-const getById = async id => boardsDB.getBoardById(id);
+const getById = async id => DB.getEntityById(TABLE_NAME, id);
 
-const deleteById = async id => boardsDB.deleteBoardById(id);
+const deleteById = async id => DB.removeEntityById(TABLE_NAME, id);
 
-const updateById = async (id, boardData) =>
-  boardsDB.updateBoardById(id, boardData);
+const updateById = async (id, userData) =>
+  DB.updateEntityById(TABLE_NAME, id, userData);
 
 module.exports = { getAll, getById, create, deleteById, updateById };

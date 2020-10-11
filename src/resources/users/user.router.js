@@ -1,23 +1,28 @@
 const router = require('express').Router();
-const User = require('./user.model');
 const usersService = require('./user.service');
 
 router.route('/').get(async (req, res) => {
-  const users = await usersService.getAll();
-  res.json(users.map(User.toResponse));
+  try {
+    const allUsers = await usersService.getAll();
+    res.json(allUsers);
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
 });
 
 router.route('/').post(async (req, res) => {
-  const userData = new User(req.body);
-  const newUser = await usersService.create(userData);
-
-  res.json(newUser ? User.toResponse(newUser) : null);
+  try {
+    const newUser = await usersService.create(req.body);
+    res.json(newUser);
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
 });
 
 router.route('/:id').get(async (req, res) => {
   try {
     const user = await usersService.getById(req.params.id);
-    res.json(user ? User.toResponse(user) : null);
+    res.json(user);
   } catch (err) {
     res.status(404).send(err.message);
   }

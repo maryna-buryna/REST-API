@@ -38,7 +38,6 @@ router.route('/:id').put(async (req, res) => {
     const user = await boardService.updateById(req.params.id, req.body);
     res.json(user);
   } catch (err) {
-    console.log(err.message);
     res.status(404).send(err.message);
   }
 });
