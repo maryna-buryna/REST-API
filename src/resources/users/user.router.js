@@ -19,7 +19,7 @@ router.route('/:id').get(async (req, res) => {
     const user = await usersService.getById(req.params.id);
     res.json(user ? User.toResponse(user) : null);
   } catch (err) {
-    res.sendStatus(404).send(err.message);
+    res.status(404).send(err.message);
   }
 });
 
@@ -28,7 +28,7 @@ router.route('/:id').delete(async (req, res) => {
     const userId = await usersService.deleteById(req.params.id);
     res.json(userId);
   } catch (err) {
-    res.sendStatus(404).send(err.message);
+    res.status(404).send(err.message);
   }
 });
 
@@ -37,7 +37,7 @@ router.route('/:id').put(async (req, res) => {
     const user = await usersService.updateById(req.params.id, req.body);
     res.json(user);
   } catch (err) {
-    res.sendStatus(404).send(err.message);
+    res.status(404).send(err.message);
   }
 });
 
