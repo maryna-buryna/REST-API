@@ -11,6 +11,10 @@ class Board {
     const { id, title, columns } = board;
     return { id, title, columns };
   }
+
+  static fromRequest(data) {
+    return new Board(data);
+  }
 }
 
 module.exports = Board;

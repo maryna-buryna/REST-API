@@ -1,11 +1,14 @@
 const Board = require('./board.model');
 const boardRepo = require('./board.memory.repository');
+const taskRepo = require('../tasks/task.memory.repository');
 
 const create = async data => {
   const boardData = new Board(data);
   const newBoard = await boardRepo.create(boardData);
   if (!newBoard) {
-    throw 'We have an issue with creation new board. Could you please try again';
+    throw Error(
+      'We have an issue with creation new board. Could you please try again'
+    );
   }
   return Board.toResponse(newBoard);
 };
@@ -20,7 +23,14 @@ const getById = async id => {
   return Board.toResponse(board);
 };
 
-const updateById = (id, boardData) => boardRepo.updateById(id, boardData);
-const deleteById = id => boardRepo.deleteById(id);
+const updateById = async (id, boardData) =>
+  boardRepo.updateById(id, Board.fromRequest(boardData));
+
+const deleteById = async id => {
+  const allTasks = (await taskRepo.getAllByBoardId(id)) || [];
+  const promises = allTasks.map(entry => taskRepo.deleteById(id, entry.id));
+  await Promise.all(promises);
+  return boardRepo.deleteById(id);
+};
 
 module.exports = { create, getAll, getById, updateById, deleteById };

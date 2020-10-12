@@ -29,6 +29,7 @@ router.route('/:id').delete(async (req, res) => {
     const boardId = await boardService.deleteById(req.params.id);
     res.json(boardId);
   } catch (err) {
+    console.log(err.message);
     res.status(404).send(err.message);
   }
 });

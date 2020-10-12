@@ -2,7 +2,8 @@ const deepClone = require('../utils/deepClone');
 
 const DB = {
   Users: [],
-  Boards: []
+  Boards: [],
+  Tasks: []
 };
 
 const getAllEntities = tableName => {
@@ -14,7 +15,9 @@ const getEntityById = (tableName, id) => {
   const entry = DB[tableName].filter(entity => entity.id === id);
 
   if (entry.length === 0) {
-    throw `Entity with id: ${id} has not been found in table: ${tableName}`;
+    throw Error(
+      `Entity with id: ${id} has not been found in table: ${tableName}`
+    );
   }
 
   return deepClone(entry[0]);
