@@ -25,9 +25,4 @@ app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 app.use('/boards', taskRouter);
 
-// app.use((err, req, res) => {
-//   console.log('djfhdlafjkafjalsf');
-//   res.status(500).send(err.message);
-// });
-
 module.exports = app;
