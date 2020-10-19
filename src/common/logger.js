@@ -1,6 +1,5 @@
-const { finished } = require('stream');
 const { createLogger, format, transports } = require('winston');
-const { combine, label: winstonLabel, printf, colorize } = format;
+const { combine, label: winstonLabel, printf, colorize, simple } = format;
 
 const resLogFormat = printf(
   ({ level, label, message: { statusCode, method, url, ms } }) => {
@@ -17,37 +16,21 @@ const reqLogFormat = printf(
 );
 
 const reqLogger = createLogger({
+  level: 'info',
   format: combine(winstonLabel({ label: 'REQ' }), colorize(), reqLogFormat),
   transports: [new transports.Console()]
 });
 
 const resLogger = createLogger({
+  level: 'info',
   format: combine(winstonLabel({ label: 'RES' }), colorize(), resLogFormat),
   transports: [new transports.Console()]
 });
 
-const loggerMiddleware = (req, res, next) => {
-  const { method, url, query, body } = req;
-  const start = new Date();
-  reqLogger.info({
-    body: JSON.stringify(body),
-    query: JSON.stringify(query),
-    method,
-    url
-  });
+const errLogger = createLogger({
+  level: 'error',
+  format: combine(colorize(), simple()),
+  transports: [new transports.Console()]
+});
 
-  finished(res, () => {
-    const ms = new Date() - start;
-    const { statusCode } = res;
-    resLogger.info({
-      method: method.toUpperCase(),
-      ms,
-      statusCode,
-      url
-    });
-  });
-
-  return next();
-};
-
-module.exports = loggerMiddleware;
+module.exports = { reqLogger, resLogger, errLogger };

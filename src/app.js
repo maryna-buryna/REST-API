@@ -4,8 +4,8 @@ const path = require('path');
 const YAML = require('yamljs');
 
 const rootRouter = require('./router');
-const logger = require('./middlewares/logger');
-const errorLogger = require('./middlewares/errorLogger');
+const requestLogger = require('./middlewares/requestLogger');
+const errorHandler = require('./middlewares/errorHandler');
 
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
@@ -15,11 +15,12 @@ app.use(express.json());
 
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-// const promise = new Promise((resolve, reject) => {
-//   return reject('TEST : Custom "UnhandledRejection" error');
-// });
+// eslint-disable-next-line no-unused-vars
+const _promise = new Promise((resolve, reject) => {
+  return reject('Custom "UnhandledRejection" error');
+});
 
-app.use(logger);
+app.use(requestLogger);
 
 app.use('/', (req, res, next) => {
   if (req.originalUrl === '/') {
@@ -30,15 +31,6 @@ app.use('/', (req, res, next) => {
 });
 
 app.use('/', rootRouter);
-
-app.use(errorLogger);
-
-process.on('uncaughtException', err => {
-  console.error(`Ooops: ${err.message}`);
-});
-
-process.on('unhandledRejection', err => {
-  console.error(`Ooops UnhandledRejection : ${err}`);
-});
+app.use(errorHandler);
 
 module.exports = app;
