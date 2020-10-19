@@ -2,16 +2,24 @@ const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const path = require('path');
 const YAML = require('yamljs');
-const userRouter = require('./resources/users/user.router');
-const boardRouter = require('./resources/boards/board.router');
-const taskRouter = require('./resources/tasks/task.router');
+
+const rootRouter = require('./router');
+const logger = require('./middlewares/logger');
+const errorLogger = require('./middlewares/errorLogger');
+
+const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 const app = express();
-const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 app.use(express.json());
 
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
+// const promise = new Promise((resolve, reject) => {
+//   return reject('TEST : Custom "UnhandledRejection" error');
+// });
+
+app.use(logger);
 
 app.use('/', (req, res, next) => {
   if (req.originalUrl === '/') {
@@ -21,8 +29,16 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use('/users', userRouter);
-app.use('/boards', boardRouter);
-app.use('/boards', taskRouter);
+app.use('/', rootRouter);
+
+app.use(errorLogger);
+
+process.on('uncaughtException', err => {
+  console.error(`Ooops: ${err.message}`);
+});
+
+process.on('unhandledRejection', err => {
+  console.error(`Ooops UnhandledRejection : ${err}`);
+});
 
 module.exports = app;

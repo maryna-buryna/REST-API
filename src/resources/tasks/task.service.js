@@ -4,11 +4,6 @@ const taskRepo = require('./task.memory.repository');
 const createOnBoard = async (boardId, data) => {
   const taskData = new Task({ ...data, boardId });
   const newTask = await taskRepo.create(taskData);
-  if (!newTask) {
-    throw Error(
-      'We have an issue with creation new board. Could you please try again'
-    );
-  }
   return Task.toResponse(newTask);
 };
 
@@ -24,13 +19,6 @@ const getAllByBoardId = async boardId => {
 
 const getByIdOnBoard = async (boardId, taskId) => {
   const task = await taskRepo.getByIdOnBoard(boardId, taskId);
-
-  if (!task) {
-    throw Error(
-      `There's no task with id: ${taskId} on board with id ${boardId}`
-    );
-  }
-
   return Task.toResponse(task);
 };
 

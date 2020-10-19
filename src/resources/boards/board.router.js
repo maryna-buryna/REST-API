@@ -6,40 +6,40 @@ router.route('/').get(async (req, res) => {
   res.json(allBoards);
 });
 
-router.route('/').post(async (req, res) => {
+router.route('/').post(async (req, res, next) => {
   try {
     const newBoard = await boardService.create(req.body);
     res.json(newBoard);
   } catch (err) {
-    res.status(404).send(err.message);
+    return next(err);
   }
 });
 
-router.route('/:id').get(async (req, res) => {
+router.route('/:id').get(async (req, res, next) => {
   try {
     const board = await boardService.getById(req.params.id);
     res.json(board);
   } catch (err) {
-    res.status(404).send(err.message);
+    console.log('jdsklsfjask', err.message);
+    return next(err);
   }
 });
 
-router.route('/:id').delete(async (req, res) => {
+router.route('/:id').delete(async (req, res, next) => {
   try {
     const boardId = await boardService.deleteById(req.params.id);
     res.json(boardId);
   } catch (err) {
-    console.log(err.message);
-    res.status(404).send(err.message);
+    return next(err);
   }
 });
 
-router.route('/:id').put(async (req, res) => {
+router.route('/:id').put(async (req, res, next) => {
   try {
     const user = await boardService.updateById(req.params.id, req.body);
     res.json(user);
   } catch (err) {
-    res.status(404).send(err.message);
+    return next(err);
   }
 });
 

@@ -5,11 +5,6 @@ const taskRepo = require('../tasks/task.memory.repository');
 const create = async data => {
   const boardData = new Board(data);
   const newBoard = await boardRepo.create(boardData);
-  if (!newBoard) {
-    throw Error(
-      'We have an issue with creation new board. Could you please try again'
-    );
-  }
   return Board.toResponse(newBoard);
 };
 
