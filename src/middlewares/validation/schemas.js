@@ -11,11 +11,9 @@ const schemas = {
     taskId: Joi.string()
       .guid({ version: UUID_VERSION })
       .required(),
-    boardId: Joi.string()
-      .guid({ version: UUID_VERSION })
-      .required()
+    boardId: Joi.string().guid({ version: UUID_VERSION })
   }),
-  boardId: Joi.object({
+  boardParams: Joi.object({
     boardId: Joi.string()
       .guid({ version: UUID_VERSION })
       .required()

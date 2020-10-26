@@ -5,7 +5,7 @@ const schemas = require('../../middlewares/validation/schemas');
 
 router
   .route('/')
-  .get(validator(schemas.boardId, 'params'), async (req, res) => {
+  .get(validator(schemas.boardParams, 'params'), async (req, res) => {
     const allTaskInBoard = await taskService.getAllByBoardId(
       req.params.boardId
     );
@@ -14,7 +14,7 @@ router
 
 router
   .route('/')
-  .post(validator(schemas.boardId, 'params'), async (req, res) => {
+  .post(validator(schemas.boardParams, 'params'), async (req, res) => {
     const newTask = await taskService.createOnBoard(
       req.params.boardId,
       req.body
@@ -24,7 +24,7 @@ router
 
 router
   .route('/:taskId')
-  .get(validator(schemas.taskId, 'params'), async (req, res) => {
+  .get(validator(schemas.taskParams, 'params'), async (req, res) => {
     const { taskId, boardId } = req.params;
     const task = await taskService.getByIdOnBoard(boardId, taskId);
     console.log('-----', task);
@@ -33,7 +33,7 @@ router
 
 router
   .route('/:taskId')
-  .delete(validator(schemas.taskId, 'params'), async (req, res) => {
+  .delete(validator(schemas.taskParams, 'params'), async (req, res) => {
     const { taskId, boardId } = req.params;
     const taskData = await taskService.deleteById(boardId, taskId);
     res.json(taskData);
@@ -41,7 +41,7 @@ router
 
 router
   .route('/:taskId')
-  .put(validator(schemas.taskId, 'params'), async (req, res) => {
+  .put(validator(schemas.taskParams, 'params'), async (req, res) => {
     const { boardId, taskId } = req.params;
     const task = await taskService.updateById(boardId, taskId, req.body);
     res.json(task);
