@@ -1,26 +1,38 @@
-const uuid = require('uuid');
+const uuidv4 = require('uuid/v4');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+// Will add the UUID type to the Mongoose Schema types
+// require('mongoose-uuid2')(mongoose);
+// var UUID = mongoose.Types.UUID;
 
-class User {
-  constructor({
-    id = uuid(),
-    name = 'USER',
-    login = 'user',
-    password = 'P@55w0rd'
-  } = {}) {
-    this.id = id;
-    this.name = name;
-    this.login = login;
-    this.password = password;
+const UserSchema = new Schema(
+  {
+    _id: { type: String, default: uuidv4, unique: true },
+    name: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    login: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    password: { type: String, required: true }
+  },
+  {
+    collection: 'users'
   }
+);
 
-  static toResponse(user) {
-    const { id, name, login } = user;
-    return { id, name, login };
-  }
+UserSchema.statics.toResponse = user => {
+  const { _id: id, name, login } = user;
+  return { id, name, login };
+};
 
-  static fromRequest(data) {
-    return new User(data);
-  }
-}
+UserSchema.statics.fromRequest = user => {
+  const { name, login, password } = user;
+  return { name, login, password };
+};
 
-module.exports = User;
+module.exports = mongoose.model('User', UserSchema);

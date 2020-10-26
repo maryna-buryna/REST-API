@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const validator = require('../../middlewares/validation/validator');
+const schemas = require('../../middlewares/validation/schemas');
 const boardService = require('./board.service');
 
 router.route('/').get(async (req, res) => {
@@ -6,41 +8,33 @@ router.route('/').get(async (req, res) => {
   res.json(allBoards);
 });
 
-router.route('/').post(async (req, res, next) => {
-  try {
+router.route('/').post(
+  // validator(schemas.id, 'params'), // todo: postValidator
+  async (req, res) => {
     const newBoard = await boardService.create(req.body);
     res.json(newBoard);
-  } catch (err) {
-    return next(err);
   }
+);
+
+router.route('/:id').get(validator(schemas.id, 'params'), async (req, res) => {
+  const board = await boardService.getById(req.params.id);
+  console.log('sdsfdsf', board);
+  res.json(board);
 });
 
-router.route('/:id').get(async (req, res, next) => {
-  try {
-    const board = await boardService.getById(req.params.id);
-    res.json(board);
-  } catch (err) {
-    console.log('jdsklsfjask', err.message);
-    return next(err);
-  }
-});
-
-router.route('/:id').delete(async (req, res, next) => {
-  try {
+router
+  .route('/:id')
+  .delete(validator(schemas.id, 'params'), async (req, res) => {
     const boardId = await boardService.deleteById(req.params.id);
     res.json(boardId);
-  } catch (err) {
-    return next(err);
-  }
-});
+  });
 
-router.route('/:id').put(async (req, res, next) => {
-  try {
+router.route('/:id').put(
+  validator(schemas.id, 'params'), // todo: postValidator
+  async (req, res) => {
     const user = await boardService.updateById(req.params.id, req.body);
     res.json(user);
-  } catch (err) {
-    return next(err);
   }
-});
+);
 
 module.exports = router;

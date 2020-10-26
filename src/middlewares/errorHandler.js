@@ -1,15 +1,20 @@
-const { NOT_FOUND, BAD_REQUEST } = require('http-status-codes');
-const { errLogger } = require('../common/logger');
-const { NotFoundError } = require('../utils/errors');
+const { INTERNAL_SERVER_ERROR } = require('http-status-codes');
+const { logger } = require('../common/logger');
 
-const errorHandler = (err, req, res, next) => {
-  errLogger.error(err.message);
-  if (err instanceof NotFoundError) {
-    res.status(NOT_FOUND).send(err.message);
+// eslint-disable-next-line no-unused-vars
+const errorHandler = (err, req, res, _next) => {
+  if (err.status) {
+    logger.error(`${err.status}: ${err.message}`);
+    res.status(err.status).json({
+      status: err.status,
+      message: err.message
+    });
   } else {
-    res.status(BAD_REQUEST).send(err.message);
+    logger.error(err.message);
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .send('Sorry, servise is not responding. Try again later');
   }
-  next(err);
 };
 
 module.exports = errorHandler;

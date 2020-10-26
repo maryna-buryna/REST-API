@@ -1,60 +1,61 @@
-const deepClone = require('../utils/deepClone');
-const { NotFoundError } = require('../utils/errors');
+const createHttpError = require('http-errors');
+const { NOT_FOUND } = require('http-status-codes');
 
-const DB = {
-  Users: [],
-  Boards: [],
-  Tasks: []
+const getAllBy = async (Model, findBy, value) => {
+  const enties = await Model.find({ [findBy]: value });
+  return enties.map(entry => Model.toResponse(entry));
 };
 
-const getAllEntities = tableName => {
-  const entries = DB[tableName];
-  return deepClone(entries);
+const getAllEntities = async Model => {
+  const enties = await Model.find({});
+  return enties.map(entry => Model.toResponse(entry));
 };
 
-const getEntityById = (tableName, id) => {
-  const entry = DB[tableName].filter(entity => entity.id === id);
+const getEntityById = async (Model, id) => {
+  const entry = await Model.findById(id);
+  if (!entry) {
+    throw new createHttpError(
+      NOT_FOUND,
+      `Entity with id: ${id} has not been found.`
+    );
+  }
+  return Model.toResponse(entry);
+};
 
-  if (entry.length === 0) {
-    throw new NotFoundError(
-      `Entity with id: ${id} has not been found in table: ${tableName}`
+const addEntity = async (Model, data) => {
+  const entryData = Model.fromRequest(data);
+  const entry = await Model.create(entryData);
+  return Model.toResponse(entry);
+};
+
+const updateEntityById = async (Model, id, newData) => {
+  const entryData = Model.fromRequest(newData);
+  const entry = await Model.findByIdAndUpdate(id, entryData);
+  if (!entry) {
+    throw new createHttpError(
+      NOT_FOUND,
+      `Entity with id: ${id} has not been found.`
+    );
+  }
+  return Model.toResponse(entry);
+};
+
+const removeEntityById = async (Model, id) => {
+  const entry = await Model.findByIdAndDelete(id);
+
+  if (!entry) {
+    throw new createHttpError(
+      NOT_FOUND,
+      `Entity with id: ${id} has not been found.`
     );
   }
 
-  return deepClone(entry[0]);
-};
-
-const addEntity = (tableName, data) => {
-  DB[tableName].push(data);
-  return getEntityById(tableName, data.id);
-};
-
-const updateEntityById = (tableName, id, newData) => {
-  const entryIndex = DB[tableName].findIndex(entry => entry.id === id);
-  if (entryIndex === -1) {
-    throw new NotFoundError(
-      `Entity with id: ${id} has not been found in table: ${tableName}`
-    );
-  }
-
-  DB[tableName][entryIndex] = newData;
-  return getEntityById(tableName, id);
-};
-
-const removeEntityById = (tableName, id) => {
-  const entryIndex = DB[tableName].findIndex(entry => entry.id === id);
-  if (entryIndex === -1) {
-    throw new NotFoundError(
-      `Entity with id: ${id} has not been found in table: ${tableName}`
-    );
-  }
-
-  DB[tableName].splice(entryIndex, 1);
-  return id;
+  return entry._id;
 };
 
 module.exports = {
   addEntity,
+  getAllBy,
   getEntityById,
   getAllEntities,
   removeEntityById,

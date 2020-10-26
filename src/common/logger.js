@@ -27,10 +27,16 @@ const resLogger = createLogger({
   transports: [new transports.Console()]
 });
 
-const errLogger = createLogger({
-  level: 'error',
+const logger = createLogger({
   format: combine(colorize(), simple()),
-  transports: [new transports.Console()]
+  transports: [
+    new transports.Console({
+      level: 'info'
+    }),
+    new transports.Console({
+      level: 'error'
+    })
+  ]
 });
 
-module.exports = { reqLogger, resLogger, errLogger };
+module.exports = { reqLogger, resLogger, logger };

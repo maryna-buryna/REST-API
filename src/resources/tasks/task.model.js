@@ -1,41 +1,60 @@
-const uuid = require('uuid');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+const uuidv4 = require('uuid/v4');
 
-class Task {
-  constructor({
-    id = uuid(),
-    title = 'TASK',
-    order = '0',
+const TaskSchema = new Schema(
+  {
+    _id: { type: String, default: uuidv4, unique: true },
+    title: String,
+    order: Number,
+    description: String,
+    userId: {
+      type: String,
+      ref: 'User'
+    },
+    boardId: {
+      type: String,
+      ref: 'Board',
+      required: true
+    },
+    columnId: String
+  },
+  {
+    collection: 'tasks'
+  }
+);
+
+TaskSchema.statics.toResponse = task => {
+  const {
+    _id: id,
+    title,
+    order,
     description,
     userId,
     boardId,
     columnId
-  } = {}) {
-    this.id = id;
-    this.title = title;
-    this.order = order;
-    this.description = description;
-    this.userId = userId;
-    this.boardId = boardId;
-    this.columnId = columnId;
-  }
+  } = task;
+  return {
+    id,
+    title,
+    order,
+    description,
+    userId,
+    boardId,
+    columnId
+  };
+};
 
-  static toResponse(user) {
-    const { id, title, order, description, userId, boardId, columnId } = user;
+TaskSchema.statics.fromRequest = task => {
+  const { title, order, description, userId, boardId, columnId } = task;
+  return {
+    title,
+    order,
+    description,
+    userId,
+    boardId,
+    columnId
+  };
+};
 
-    return {
-      id,
-      title,
-      order,
-      description,
-      userId,
-      boardId,
-      columnId
-    };
-  }
-
-  static fromRequest(data) {
-    return new Task(data);
-  }
-}
-
-module.exports = Task;
+module.exports = mongoose.model('Task', TaskSchema);

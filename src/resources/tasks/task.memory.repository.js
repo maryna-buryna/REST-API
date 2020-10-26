@@ -1,32 +1,40 @@
 const DB = require('../../common/db');
-const TABLE_NAME = 'Tasks';
+const Task = require('./task.model');
+const createHttpError = require('http-errors');
+const { NOT_FOUND } = require('http-status-codes');
 
-const create = async taskData => DB.addEntity(TABLE_NAME, taskData);
+const create = async taskData => DB.addEntity(Task, taskData);
 
-const getAllByBoardId = async boardId => {
-  const allTasks = DB.getAllEntities(TABLE_NAME) || [];
-  return allTasks.filter(task => task.boardId === boardId);
-};
+const getAllByBoardId = async boardId =>
+  DB.getAllBy(Task, 'boardId', boardId) || [];
 
-const getAllByUserId = async userId => {
-  const allTasks = DB.getAllEntities(TABLE_NAME) || [];
-  return allTasks.filter(task => task.userId === userId);
-};
+const getAllByUserId = async userId =>
+  DB.getAllBy(Task, 'userId', userId) || [];
 
 const getByIdOnBoard = async (boardId, taskId) => {
-  const task = DB.getEntityById(TABLE_NAME, taskId);
-  return task.boardId === boardId ? task : null;
+  const entry = await Task.findOne({ boardId, _id: taskId });
+  if (!entry) {
+    throw new createHttpError(
+      NOT_FOUND,
+      `Task with id: ${taskId} has not been found on board ${boardId}.`
+    );
+  }
+  return Task.toResponse(entry);
 };
 
 const deleteById = async (boardId, taskId) => {
-  const task = DB.getEntityById(TABLE_NAME, taskId);
-  if (task.boardId === boardId) {
-    DB.removeEntityById(TABLE_NAME, taskId);
+  const entry = await Task.findOneAndDelete({ boardId, _id: taskId });
+  if (!entry) {
+    throw new createHttpError(
+      NOT_FOUND,
+      `Task with id: ${taskId} has not been found on board ${boardId}.`
+    );
   }
+  return taskId;
 };
 
-const updateById = async (id, data) =>
-  DB.updateEntityById(TABLE_NAME, id, data);
+const updateById = async (id, taskData) =>
+  DB.updateEntityById(Task, id, taskData);
 
 module.exports = {
   getAllByBoardId,

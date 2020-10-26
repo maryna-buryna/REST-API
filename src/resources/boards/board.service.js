@@ -1,30 +1,19 @@
-const Board = require('./board.model');
 const boardRepo = require('./board.memory.repository');
 const taskRepo = require('../tasks/task.memory.repository');
 
-const create = async data => {
-  const boardData = new Board(data);
-  const newBoard = await boardRepo.create(boardData);
-  return Board.toResponse(newBoard);
-};
+const create = async boardData => boardRepo.create(boardData);
 
-const getAll = async () => {
-  const boards = await boardRepo.getAll();
-  return boards.map(Board.toResponse);
-};
+const getAll = async () => boardRepo.getAll();
 
-const getById = async id => {
-  const board = await boardRepo.getById(id);
-  return Board.toResponse(board);
-};
+const getById = async id => boardRepo.getById(id);
 
-const updateById = async (id, boardData) =>
-  boardRepo.updateById(id, Board.fromRequest(boardData));
+const updateById = async (id, boardData) => boardRepo.updateById(id, boardData);
 
 const deleteById = async id => {
-  const allTasks = (await taskRepo.getAllByBoardId(id)) || [];
+  const allTasks = await taskRepo.getAllByBoardId(id);
   const promises = allTasks.map(entry => taskRepo.deleteById(id, entry.id));
   await Promise.all(promises);
+
   return boardRepo.deleteById(id);
 };
 
