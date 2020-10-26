@@ -8,13 +8,10 @@ router.route('/').get(async (req, res) => {
   res.json(allBoards);
 });
 
-router.route('/').post(
-  // validator(schemas.id, 'params'), // todo: postValidator
-  async (req, res) => {
-    const newBoard = await boardService.create(req.body);
-    res.json(newBoard);
-  }
-);
+router.route('/').post(async (req, res) => {
+  const newBoard = await boardService.create(req.body);
+  res.json(newBoard);
+});
 
 router.route('/:id').get(validator(schemas.id, 'params'), async (req, res) => {
   const board = await boardService.getById(req.params.id);
@@ -29,12 +26,9 @@ router
     res.json(boardId);
   });
 
-router.route('/:id').put(
-  validator(schemas.id, 'params'), // todo: postValidator
-  async (req, res) => {
-    const user = await boardService.updateById(req.params.id, req.body);
-    res.json(user);
-  }
-);
+router.route('/:id').put(validator(schemas.id, 'params'), async (req, res) => {
+  const user = await boardService.updateById(req.params.id, req.body);
+  res.json(user);
+});
 
 module.exports = router;

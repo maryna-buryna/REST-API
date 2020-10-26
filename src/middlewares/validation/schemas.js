@@ -6,6 +6,19 @@ const schemas = {
     id: Joi.string()
       .guid({ version: UUID_VERSION })
       .required()
+  }),
+  taskParams: Joi.object({
+    taskId: Joi.string()
+      .guid({ version: UUID_VERSION })
+      .required(),
+    boardId: Joi.string()
+      .guid({ version: UUID_VERSION })
+      .required()
+  }),
+  boardId: Joi.object({
+    boardId: Joi.string()
+      .guid({ version: UUID_VERSION })
+      .required()
   })
 };
 
