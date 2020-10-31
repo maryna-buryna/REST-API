@@ -19,6 +19,7 @@ const getByIdOnBoard = async (boardId, taskId) => {
       `Task with id: ${taskId} has not been found on board ${boardId}.`
     );
   }
+
   return Task.toResponse(entry);
 };
 

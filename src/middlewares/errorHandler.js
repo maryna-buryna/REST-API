@@ -10,7 +10,7 @@ const errorHandler = (err, req, res, _next) => {
       message: err.message
     });
   } else {
-    logger.error(err.message);
+    logger.error(err.trace);
     res
       .status(INTERNAL_SERVER_ERROR)
       .send('Sorry, servise is not responding. Try again later');

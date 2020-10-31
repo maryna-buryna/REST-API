@@ -27,7 +27,6 @@ router
   .get(validator(schemas.taskParams, 'params'), async (req, res) => {
     const { taskId, boardId } = req.params;
     const task = await taskService.getByIdOnBoard(boardId, taskId);
-    console.log('-----', task);
     res.json(task);
   });
 

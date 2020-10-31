@@ -4,7 +4,7 @@ const uuidv4 = require('uuid/v4');
 
 const BoardSchema = new Schema(
   {
-    _id: { type: String, default: uuidv4, unique: true },
+    _id: { type: String, default: uuidv4 },
     title: { type: String, required: true },
     columns: [{ type: Object }]
   },
@@ -14,7 +14,7 @@ const BoardSchema = new Schema(
 );
 
 BoardSchema.statics.toResponse = board => {
-  const { _id: id, title, columns } = board;
+  const { id, title, columns } = board;
   return {
     id,
     title,
@@ -22,7 +22,7 @@ BoardSchema.statics.toResponse = board => {
   };
 };
 
-BoardSchema.statics.fromRequest = board => {
+BoardSchema.statics.fromRequest = async board => {
   const { title, columns } = board;
   return { title, columns };
 };

@@ -15,7 +15,6 @@ router.route('/').post(async (req, res) => {
 
 router.route('/:id').get(validator(schemas.id, 'params'), async (req, res) => {
   const board = await boardService.getById(req.params.id);
-  console.log('sdsfdsf', board);
   res.json(board);
 });
 

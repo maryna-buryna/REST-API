@@ -23,13 +23,13 @@ const getEntityById = async (Model, id) => {
 };
 
 const addEntity = async (Model, data) => {
-  const entryData = Model.fromRequest(data);
+  const entryData = await Model.fromRequest(data);
   const entry = await Model.create(entryData);
   return Model.toResponse(entry);
 };
 
 const updateEntityById = async (Model, id, newData) => {
-  const entryData = Model.fromRequest(newData);
+  const entryData = await Model.fromRequest(newData);
   const entry = await Model.findByIdAndUpdate(id, entryData);
   if (!entry) {
     throw new createHttpError(
@@ -50,7 +50,7 @@ const removeEntityById = async (Model, id) => {
     );
   }
 
-  return entry._id;
+  return entry.id;
 };
 
 module.exports = {

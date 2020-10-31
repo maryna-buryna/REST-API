@@ -4,7 +4,7 @@ const uuidv4 = require('uuid/v4');
 
 const TaskSchema = new Schema(
   {
-    _id: { type: String, default: uuidv4, unique: true },
+    _id: { type: String, default: uuidv4 },
     title: String,
     order: Number,
     description: String,
@@ -25,15 +25,7 @@ const TaskSchema = new Schema(
 );
 
 TaskSchema.statics.toResponse = task => {
-  const {
-    _id: id,
-    title,
-    order,
-    description,
-    userId,
-    boardId,
-    columnId
-  } = task;
+  const { id, title, order, description, userId, boardId, columnId } = task;
   return {
     id,
     title,
@@ -45,7 +37,7 @@ TaskSchema.statics.toResponse = task => {
   };
 };
 
-TaskSchema.statics.fromRequest = task => {
+TaskSchema.statics.fromRequest = async task => {
   const { title, order, description, userId, boardId, columnId } = task;
   return {
     title,

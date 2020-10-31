@@ -15,11 +15,6 @@ app.use(express.json());
 
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-// eslint-disable-next-line no-unused-vars
-const _promise = new Promise((resolve, reject) => {
-  return reject('Custom "UnhandledRejection" error');
-});
-
 app.use(requestLogger);
 
 app.use('/', (req, res, next) => {
