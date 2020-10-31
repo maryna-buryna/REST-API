@@ -8,9 +8,18 @@ const getAll = async () => DB.getAllEntities(User);
 
 const getById = async id => DB.getEntityById(User, id, TABLE_NAME);
 
+const getByLogin = async login => User.findOne({ login });
+
 const deleteById = async id => DB.removeEntityById(User, id, TABLE_NAME);
 
 const updateById = async (id, userData) =>
   DB.updateEntityById(User, id, userData, TABLE_NAME);
 
-module.exports = { getAll, getById, create, deleteById, updateById };
+module.exports = {
+  getAll,
+  getById,
+  getByLogin,
+  create,
+  deleteById,
+  updateById
+};
