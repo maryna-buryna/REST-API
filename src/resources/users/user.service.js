@@ -7,8 +7,6 @@ const getAll = async () => usersRepo.getAll();
 
 const getById = async id => usersRepo.getById(id);
 
-const getByLogin = async login => usersRepo.getByLogin(login);
-
 const updateById = async (id, userData) => usersRepo.updateById(id, userData);
 
 const deleteById = async id => {
@@ -25,7 +23,6 @@ module.exports = {
   create,
   getAll,
   getById,
-  getByLogin,
   updateById,
   deleteById
 };

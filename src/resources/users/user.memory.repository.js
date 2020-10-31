@@ -8,8 +8,6 @@ const getAll = async () => DB.getAllEntities(User);
 
 const getById = async id => DB.getEntityById(User, id, TABLE_NAME);
 
-const getByLogin = async login => User.findOne({ login });
-
 const deleteById = async id => DB.removeEntityById(User, id, TABLE_NAME);
 
 const updateById = async (id, userData) =>
@@ -18,7 +16,6 @@ const updateById = async (id, userData) =>
 module.exports = {
   getAll,
   getById,
-  getByLogin,
   create,
   deleteById,
   updateById

@@ -1,13 +1,12 @@
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
-
-const authorization = require('./services/authorization');
+const loginRouter = require('./resources/login/login.router');
 const checkToken = require('./middlewares/authotization/checkToken');
 
 const rootRouter = require('express').Router();
 
-rootRouter.post('/login', authorization);
+rootRouter.use('/login', loginRouter);
 
 rootRouter.use('/users', checkToken, userRouter);
 rootRouter.use('/boards', checkToken, boardRouter);
